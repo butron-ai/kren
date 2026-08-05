@@ -73,17 +73,12 @@
     </div>
 
     <script>
-        // Optional: If the app doesn't intercept the deep link instantly, 
-        // this script attempts to fire a custom scheme trigger after 1.5 seconds.
-        setTimeout(function() {
-            var originalPath = sessionStorage.getItem('redirect_path');
-            if (originalPath) {
-                // Clear it so it doesn't loop forever
-                sessionStorage.removeItem('redirect_path');
-                // Tries to launch app using your custom scheme format if configured
-                window.location.href = "kren://" + originalPath.replace('/kren/', '');
-            }
-        }, 1500);
+        // If GitHub routes a sub-path like /kren/join here via the 404 fallback,
+        // this script keeps the ?code=427ED8 parameters active so the app or link can process it.
+        if (window.location.pathname.includes('/join')) {
+            var cleanTarget = window.location.protocol + '//' + window.location.hostname + '/kren/' + window.location.search;
+            window.history.replaceState(null, null, cleanTarget);
+        }
     </script>
 </body>
 </html>
