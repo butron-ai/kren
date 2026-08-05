@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.butron.kren",
+    "sha256_cert_fingerprints": ["97:18:BC:96:52:38:E9:C4:FA:C5:82:1E:EB:66:51:9A:31:02:FF:03:4B:C0:7E:98:AA:38:B1:45:2E:FD:C4:06"]
+  }
+}]
