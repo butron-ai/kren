@@ -57,6 +57,16 @@
         a:hover {
             opacity: 0.9;
         }
+        .app-link {
+            background-color: transparent;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 12px;
+            display: none; /* Shown dynamically if invite code is present */
+        }
+        .app-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -67,17 +77,45 @@
 
     <div class="container">
         <div class="spinner"></div>
-        <h1>Opening in Kren..</h1>
-        <p>If you haven't installed Kren already —</p>
-        <a href="https://github.com/butron-ai/Kren-download/releases/download/App/Kren.apk">Download Kren</a>
+        <h1 id="title-text">Opening in Kren..</h1>
+        <p id="desc-text">Redirecting you to the group chat...</p>
+        
+        <!-- Manual redirect option if auto-redirect doesn't catch -->
+        <a href="#" id="open-app-btn" class="app-link">Join Group in App</a>
+        
+        <p style="margin: 16px 0 8px 0; font-size: 12px; color: #555555;">Or if you haven't installed Kren already —</p>
+        <a href="https://github.com/butron-ai/Kren-download/releases/download/App/Kren.apk">Download Kren APK</a>
     </div>
 
     <script>
-        // If GitHub routes a sub-path like /kren/join here via the 404 fallback,
-        // this script keeps the ?code=427ED8 parameters active so the app or link can process it.
+        // 1. URL cleaner logic (remains active for routes like /kren/join via 404 router)
         if (window.location.pathname.includes('/join')) {
             var cleanTarget = window.location.protocol + '//' + window.location.hostname + '/kren/' + window.location.search;
             window.history.replaceState(null, null, cleanTarget);
+        }
+
+        // 2. Parse invite code parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var code = urlParams.get('code');
+
+        if (code) {
+            var customUri = 'kren://join?code=' + encodeURIComponent(code);
+
+            // Update UI to show manual join button
+            var openBtn = document.getElementById('open-app-btn');
+            if (openBtn) {
+                openBtn.href = customUri;
+                openBtn.style.display = 'inline-block';
+            }
+
+            // 3. Trigger auto-redirect immediately using the custom URI scheme
+            window.location.href = customUri;
+        } else {
+            // Adjust texts if it is just a generic visit with no invite code
+            document.getElementById('title-text').innerText = "Kren AI Assistant";
+            document.getElementById('desc-text').innerText = "Download the official app below to start chatting.";
+            var spinner = document.querySelector('.spinner');
+            if (spinner) spinner.style.display = 'none';
         }
     </script>
 </body>
